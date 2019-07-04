@@ -7,18 +7,18 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/SendfreqText"
+        android:id="@+id/sendingFreqText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        tools:text="@string/SendfreqText" />
+        tools:text="@string/sendingFreqText" />
 
     <EditText
-        android:id="@+id/SendfreqEdit"
+        android:id="@+id/sendingFreqEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/SendfreqText"
-        android:hint="@string/SendfreqEdit"
+        app:layout_constraintTop_toBottomOf="@+id/sendingFreqText"
+        android:hint="@string/sendingFreqEdit"
         android:inputType="numberSigned"
         android:textSize="12sp" />
 
@@ -26,7 +26,7 @@
         android:id="@+id/volumeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/SendfreqEdit"
+        app:layout_constraintTop_toBottomOf="@+id/sendingFreqEdit"
         tools:text="@string/volumeText" />
 
     <EditText

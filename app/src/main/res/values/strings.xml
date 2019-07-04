@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">RectangleSender</string>
-    <string name="SendfreqText">送信周波数(18000 ~ 22000 [Hz])</string>
-    <string name="SendfreqEdit">18000 ~ 22000</string>
+    <string name="sendingFreqText">送信周波数(18000 ~ 22000 [Hz])</string>
+    <string name="sendingFreqEdit">18000 ~ 22000</string>
     <string name="volumeText">メディア音量(1 ~ 15)</string>
     <string name="volumeEdit">1 ~ 15</string>
 </resources>

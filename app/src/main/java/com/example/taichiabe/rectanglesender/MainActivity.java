@@ -1,6 +1,8 @@
 package com.example.taichiabe.rectanglesender;
 /*=========================================================*
  * システム：矩形波送信処理
+ * http://tongarism.com/1861
+ * https://dev.classmethod.jp/smartphone/andoid_sound_generator_xmas/
  *==========================================================*/
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,6 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
@@ -19,29 +20,26 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnCheckedChangeListener {
 
-    int SENDFREQ;
-    int VOLUME;
-    int SendSR;
-    int SendBufSize;
-    int musicVolume = 0;
+    //取得するデフォルト音量
+    public static int DEFAULT_VOLUME;
 
     AudioManager audioManager;
     AudioTrack audioTrack = null;
-    private List<SoundDto> soundList = new ArrayList<SoundDto>();
+    private List<SoundDto> soundList = new ArrayList<>();
     Thread send;
-    boolean bIsPlaying = false;
+    boolean isPlaying = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TextView SendfreqText = findViewById(R.id.SendfreqText);
-        SendfreqText.setText(R.string.SendfreqText);
+        TextView sendingFreqText = findViewById(R.id.sendingFreqText);
+        sendingFreqText.setText(R.string.sendingFreqText);
         TextView volumeText = findViewById(R.id.volumeText);
         volumeText.setText(R.string.volumeText);
-        Switch switch1 = findViewById(R.id.Switch);
-        switch1.setOnCheckedChangeListener(this);
+        Switch sendingSwitch = findViewById(R.id.Switch);
+        sendingSwitch.setOnCheckedChangeListener(this);
     }
 
     @Override
@@ -53,40 +51,39 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
         if(isChecked) {
-            EditText SendfreqEdit = findViewById(R.id.SendfreqEdit);
+            EditText sendingFreqEdit = findViewById(R.id.sendingFreqEdit);
             EditText volumeEdit = findViewById(R.id.volumeEdit);
 
-            SENDFREQ = Integer.parseInt(SendfreqEdit.getText().toString());
-            VOLUME = Integer.parseInt(volumeEdit.getText().toString());
+            final int SENDING_FREQ = Integer.parseInt(sendingFreqEdit.getText().toString());
+            final int SENDING_VOLUME = Integer.parseInt(volumeEdit.getText().toString());
 
-            SendSR = 4 * SENDFREQ;
-            SendBufSize = 4 * SENDFREQ;
+            final int SAMPLING_RATE = 4 * SENDING_FREQ;
+            final int SEND_BUFFER_SIZE = 4 * SENDING_FREQ;
 
             audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 
             audioTrack = new AudioTrack(
                     AudioManager.STREAM_MUSIC,
-                    SendSR,
+                    SAMPLING_RATE,
                     AudioFormat.CHANNEL_OUT_MONO,
                     AudioFormat.ENCODING_PCM_8BIT,
-                    SendBufSize,
+                    SEND_BUFFER_SIZE,
                     AudioTrack.MODE_STREAM);
 
-            soundList.add(new SoundDto(createWaves(SendSR)));
+            soundList.add(new SoundDto(createWaves(SAMPLING_RATE)));
 
-            musicVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, VOLUME, 0);
+            DEFAULT_VOLUME = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, SENDING_VOLUME, 0);
 
             audioTrack.play();
-            bIsPlaying = true;
+            isPlaying = true;
             send = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while(bIsPlaying) {
+                    while(isPlaying) {
                         for(SoundDto sound : soundList) {
                             audioTrack.write(sound.getSound(), 0, sound.getSound().length);
                         }
-                        Log.d("audioTrack","audioTrack");
                     }
                     audioTrack.stop();
                     audioTrack.release();
@@ -95,16 +92,13 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
             send.start();
         } else {
 
-            Log.d("value","SENDFREQ：" + String.valueOf(SENDFREQ));
-            Log.d("value","VOLUME：" + String.valueOf(VOLUME));
-
             if(audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
                 audioTrack.stop();
                 //audioTrack.release();
-                bIsPlaying = false;
+                isPlaying = false;
             }
             //soundList.clear();
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, musicVolume, 0);
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, DEFAULT_VOLUME, 0);
         }
     }
 
@@ -114,9 +108,9 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
 
         if(audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
             audioTrack.stop();
-            bIsPlaying = false;
+            isPlaying = false;
         }
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, musicVolume, 0);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, DEFAULT_VOLUME, 0);
     }
 
     @Override
@@ -126,7 +120,7 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
         if(audioTrack.getPlayState() == AudioTrack.PLAYSTATE_PLAYING) {
             audioTrack.stop();
             audioTrack.release();
-            bIsPlaying = false;
+            isPlaying = false;
         }
     }
 
