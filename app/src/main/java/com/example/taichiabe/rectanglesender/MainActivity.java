@@ -142,5 +142,4 @@ public class MainActivity extends Activity implements OnCheckedChangeListener {
         }
         return data;
     }
-
 }

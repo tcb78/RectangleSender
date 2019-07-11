@@ -4,4 +4,6 @@
     <string name="sendingFreqEdit">18000 ~ 22000</string>
     <string name="volumeText">メディア音量(1 ~ 15)</string>
     <string name="volumeEdit">1 ~ 15</string>
+    <string name="playing">PLAYING</string>
+    <string name="stopped">STOPPED</string>
 </resources>

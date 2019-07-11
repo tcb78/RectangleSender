@@ -45,8 +45,8 @@
         app:layout_constraintTop_toBottomOf="@+id/volumeEdit"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:textOn="PLAYING"
-        android:textOff="STOPPED" />
+        android:textOn="@string/playing"
+        android:textOff="@string/stopped" />
 
 
 </android.support.constraint.ConstraintLayout>
